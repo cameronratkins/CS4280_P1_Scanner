@@ -1,0 +1,76 @@
+Requirement specifications
+Implement scanner for the provided lexical definitions.
+
+The scanner is embedded and thus it will return one token every time it is called. Since the parser is not available yet, we will use a tester program for testing it. Avoid generating a file with all tokens, or even a container with all tokens, just produce one token at a time upon a call.
+
+The scanner could be implemented as
+
+(70pt) Plain string reader or similar - read strings separated by spaces - assuming all tokens must be separated by spaces
+(95pt) Tokens dont have to be separated by white spaces except when needed to prevent incorrect tokes (this will need FSA implementation or something similar)
+Eg. 5+x doesnt need white spaces to figure this is integer followed by operator followed by ID
+(In option 1 above this would be an error because a token "5+x" doesnt match any tokens)
+x y which is ID followed by ID must have the white space or otherwise it would be just one ID
+In either case, +5 for counting lines, for a total of 75 and 100.
+
+You must have the README.txt file with your submission (in the submission directory) stating on the first line which option you are using: 1 or 2. If the information is missing, the project will be graded under option 1.   
+
+Implement a token as a triplet {tokenID, tokenInstance, line#} (or pair if not processing line numbers).
+
+Dont forget EOFtk (end of file token) token at the end of processing
+
+Implement the scanner in a separate file with basename "scanner"
+
+For testing purposes, the scanner will be tested using a testing driver implemented in the the same scanner file or in a file with basename "testScanner". You need to implement your own tester and include as a part of the project. This tester will
+
+call the scanner, once for each single token, until it gets the EOFtk
+for each received token, it will display the token to the screen, one per line, including information (descriptive) on what token class, what token instance (if the token class includes more token instances) and what line (if applicable).
+The scanner tester is just a function with just this code
+
+token=scanner(); // get one token
+while (true) {
+  //print descriptive token  followed by line number (if implemented) followed by token instance (string) if any then \n
+  if (token == EOFTk)
+    break;
+  token=scanner();
+} 
+Invocation
+  P1 [file]
+to read from stdin or file file.f23 (the extension is implicit). Arguments are the same as P0. Wrong invocations may not be graded
+
+Grading Rubric
+10 points for architecture and coding style regardless of implementation method
+5 points for stdin processing (or redirection)
+5 points for handling errors on invocation and in alphabet
+5 point for processing line numbers
+
+The remaining points for properly recognizing/displaying tokens (50 option 1, 75 option 2)
+
+Architecture
+C or functional C++ must have (other languages appropriate differences)
+
+Types including token type in token.h
+Scanner in scanner.c and scanner.h
+Scanner tester testScanner() implemented in testScanner.c/testScanner.h  or with the above scanner file
+main.c processing the arguments then calling testScanner() function with interface and preparation as needed
+main never calls the scanner itself except for potential preparation
+
+P1 Lexical Definitions
+Case sensitive
+Each scanner error should display "LEXICAL ERROR: " followed by details including the line number if counted
+Alphabet
+all English letters (upper and lower), digits, plus the extra characters as seen below, plus white spaces
+No other characters allowed and they should generate errors
+Identifiers
+begin with an the letter x
+continue with any number of letters/digits, 8 significant total
+you may assume no identifier is longer than 8 characters (in testing, this is intended to make it easier not harder)
+Keywords (reserved, suggested individual tokens recognized as ID)
+Note that the keywords start different from identifiers but the recommendation is not to find individual keywords in the automation (you can) but to recognize a generic "keyword" (start with letter and continue as long as letters) and then figure if indeed keyword (if not then error) and which keyword
+xopen xclose xloop xdata xexit xin xout xcond xthen xlet xfunc
+Operators and delimiters (single or double character, can produce individual tokens or as a group with an instance)
+=  <<  >> > < ~  : ;  +  -  *  /  %  . (  ) , { } ; [ ]
+Note that << >> +are double-char tokens w/o spaces between the characters
+Integers
+any sequence of decimal digits, no sign, no decimal point, up to 8 significant
+you may assume no number longer than 8 characters (in testing)
+Comments start with $ and end with end with $ and contain any characters (you may assume no white spaces inside as in $thisiscomment$)
